@@ -1,0 +1,75 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# LiveKit & Media
+recordings/
+*.webm
+*.mp4
+*.wav
+*.mp3
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vite
+.vite/
+
+# Testing
+coverage/
+
+# Misc
+tmp/
+temp/
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs (server)
+server/logs
+server/*.log
+
+# Secrets
+*.pem
+*.key
+*.cert
+*.secret
+
+# Tooling
+.eslintcache
+
+
+# Backups
+*.bak
+*~
+*.swp
+
+# Scratchpad
+plan.md

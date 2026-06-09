@@ -1,0 +1,12 @@
+.canvas {
+  border: 2px solid #555;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  display: block;
+  margin: 20px auto;
+  background-color: #f9f9f9;
+  transition: box-shadow 0.3s ease-in-out;
+}
+.canvas:hover {
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.35);
+}
