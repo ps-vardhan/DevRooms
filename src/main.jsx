@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
@@ -31,19 +30,5 @@ self.MonacoEnvironment = {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
-=======
-import { ChakraProvider } from '@chakra-ui/react';
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App.jsx';
-import './index.css';
-import theme from './theme.js';
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <ChakraProvider theme={theme}>
-    <App />
-    </ChakraProvider>
->>>>>>> a9858fce53e89caf6bc22def26bb1f0522c6343f
   </StrictMode>,
 )
