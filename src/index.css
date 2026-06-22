@@ -1,22 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* HSL Color System - Light Mode */
+  --accent-h: 274;
+  --accent-s: 100%;
+  --accent-l: 62%;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --text: hsl(265, 9%, 42%);
+  --text-h: hsl(255, 37%, 4%);
+  --bg: hsl(0, 0%, 100%);
+  --border: hsl(260, 5%, 90%);
+  --code-bg: hsl(51, 20%, 94%);
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  --accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+  --accent-bg: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.1);
+  --accent-border: hsla(var(--accent-h), var(--accent-s), var(--accent-l), 0.5);
+  --social-bg: hsla(51, 20%, 94%, 0.5);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  --sans: "Inter", system-ui, -apple-system, sans-serif;
+  --heading: "Inter", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+
+  font: 18px/150% var(--sans);
+  letter-spacing: -0.01em;
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -25,6 +37,12 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* Global transitions for theme elements */
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+
   @media (max-width: 1024px) {
     font-size: 16px;
   }
@@ -32,17 +50,18 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+    /* HSL Color System - Dark Mode */
+    --accent-l: 77%;
+
+    --text: hsl(218, 11%, 65%);
+    --text-h: hsl(220, 14%, 96%);
+    --bg: hsl(229, 14%, 10%);
+    --border: hsl(229, 11%, 20%);
+    --code-bg: hsl(231, 14%, 14%);
+
+    --social-bg: hsla(231, 14%, 14%, 0.5);
+    --shadow-lg:
+      0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.25);
   }
 
   #social .button-icon {
@@ -50,8 +69,37 @@
   }
 }
 
+/* Custom Text Selection styling */
+::selection {
+  background-color: hsla(
+    var(--accent-h),
+    var(--accent-s),
+    var(--accent-l),
+    0.25
+  );
+  color: var(--text-h);
+}
+
+/* Standardized Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-border);
+}
+
 body {
   margin: 0;
+  overflow-x: hidden;
 }
 
 #root {
@@ -60,37 +108,46 @@ body {
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);
+  min-height: 100vh;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  background-color: var(--bg);
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 h1,
 h2 {
   font-family: var(--heading);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-h);
+  letter-spacing: -0.025em;
+  margin: 0;
+  transition: color 0.3s ease;
 }
 
 h1 {
   font-size: 56px;
-  letter-spacing: -1.68px;
+  line-height: 115%;
   margin: 32px 0;
   @media (max-width: 1024px) {
     font-size: 36px;
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
+  line-height: 120%;
   margin: 0 0 8px;
   @media (max-width: 1024px) {
     font-size: 20px;
   }
 }
+
 p {
   margin: 0;
 }
@@ -99,13 +156,24 @@ code,
 .counter {
   font-family: var(--mono);
   display: inline-flex;
-  border-radius: 4px;
+  border-radius: 6px;
   color: var(--text-h);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 code {
-  font-size: 15px;
-  line-height: 135%;
+  font-size: 14px;
+  line-height: 140%;
   padding: 4px 8px;
   background: var(--code-bg);
+  border: 1px solid var(--border);
+}
+
+/* Premium Focus styles for accessibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
