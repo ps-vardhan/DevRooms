@@ -4,6 +4,15 @@ import RoomDashboard from './components/RoomDashboard.jsx';
 import CodingRoom from './components/CodingRoom.jsx';
 import { YjsProvider } from './context/YjsContext.jsx';
 
+const safeParseJson = async (response) => {
+  const text = await response.text();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return { message: text || "Server returned an invalid response." };
+  }
+};
+
 function App() {
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'signup'
   const [firstName, setFirstName] = useState('');
@@ -16,6 +25,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [notification, setNotification] = useState(null);
+  const [isLightMode, setIsLightMode] = useState(false);
 
   // Auto-clear notification after 6 seconds
   useEffect(() => {
@@ -28,8 +38,8 @@ function App() {
   // Check active session on initial component load
   useEffect(() => {
     fetch('/api/profile')
-      .then(res => {
-        if (res.ok) return res.json();
+      .then(async res => {
+        if (res.ok) return safeParseJson(res);
         throw new Error("No active session");
       })
       .then(data => {
@@ -63,7 +73,7 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emailId, password })
       });
-      const data = await response.json();
+      const data = await safeParseJson(response);
 
       if (!response.ok) {
         throw new Error(data.message || 'Invalid login email or password.');
@@ -74,7 +84,8 @@ function App() {
         firstName: data.firstName,
         lastName: data.lastName,
         emailId: data.emailId,
-        avatarUrl: data.avatarUrl || ''
+        avatarUrl: data.avatarUrl || '',
+        displayName: data.displayName || ''
       });
       setNotification({ type: 'success', message: `Welcome back, ${data.firstName}!` });
     } catch (err) {
@@ -95,7 +106,7 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, emailId, password })
       });
-      const data = await response.json();
+      const data = await safeParseJson(response);
 
       if (!response.ok) {
         throw new Error(data.message || 'Registration failed. Check inputs.');
@@ -108,7 +119,7 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emailId, password })
       });
-      const loginData = await loginResponse.json();
+      const loginData = await safeParseJson(loginResponse);
 
       if (loginResponse.ok) {
         setUser({
@@ -116,7 +127,8 @@ function App() {
           firstName: loginData.firstName,
           lastName: loginData.lastName,
           emailId: loginData.emailId,
-          avatarUrl: loginData.avatarUrl || ''
+          avatarUrl: loginData.avatarUrl || '',
+          displayName: loginData.displayName || ''
         });
       } else {
         handleTabChange('login');
@@ -160,7 +172,7 @@ function App() {
       <div className="auth-page-wrapper">
         {currentRoomId ? (
           <YjsProvider roomId={currentRoomId} currentUser={user}>
-            <CodingRoom roomId={currentRoomId} onLeaveRoom={() => setCurrentRoomId(null)} />
+            <CodingRoom roomId={currentRoomId} currentUser={user} onLeaveRoom={() => setCurrentRoomId(null)} />
           </YjsProvider>
         ) : (
           <RoomDashboard 
@@ -187,19 +199,17 @@ function App() {
             <p className="auth-subtitle">Elevate your live coding education session</p>
           </div>
 
-          <div className="auth-tabs">
-            <button
-              onClick={() => handleTabChange('login')}
-              className={`tab-btn ${activeTab === 'login' ? 'active' : ''}`}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => handleTabChange('signup')}
-              className={`tab-btn ${activeTab === 'signup' ? 'active' : ''}`}
-            >
-              Register
-            </button>
+          <div className="toggle-switch" style={{ margin: '0 auto 28px auto' }}>
+            <input
+              type="checkbox"
+              id="auth-toggle-cb"
+              className="checkbox"
+              checked={activeTab === 'signup'}
+              onChange={() => handleTabChange(activeTab === 'login' ? 'signup' : 'login')}
+            />
+            <span className="slider"></span>
+            <label htmlFor="auth-toggle-cb" className="tab-label tab-label-signin">Sign In</label>
+            <label htmlFor="auth-toggle-cb" className="tab-label tab-label-register">Register</label>
           </div>
 
           {notification && (
