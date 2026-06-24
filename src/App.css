@@ -22,10 +22,10 @@
 
 body {
   margin: 0;
-  background-color: var(--bg);
   color: var(--text);
   overflow-x: hidden;
   font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  background-color: #1a1a1a;
 }
 
 #root {
@@ -40,9 +40,50 @@ body {
   display: flex;
   min-height: 100vh;
   width: 100vw;
-  background-color: var(--bg);
   overflow: hidden;
   position: relative;
+  background: 
+    /* Diagonal slices */
+    radial-gradient(
+      circle at 100% 50%,
+      #ff00cc 0% 2%,
+      #00ffcc 3% 5%,
+      transparent 6%
+    ),
+    /* Offset dots */
+      radial-gradient(
+        circle at 0% 50%,
+        #ff00cc 0% 2%,
+        #00ffcc 3% 5%,
+        transparent 6%
+      ),
+    /* Wave-like pattern */
+      radial-gradient(ellipse at 50% 0%, #3300ff 0% 3%, transparent 4%) 10px
+      10px,
+    /* Scattered elements */
+      radial-gradient(
+        circle at 50% 50%,
+        #00ffcc 0% 1%,
+        #ff00cc 2% 3%,
+        #3300ff 4% 5%,
+        transparent 6%
+      )
+      20px 20px,
+    /* Background texture */
+      repeating-linear-gradient(
+        45deg,
+        #1a1a1a,
+        #1a1a1a 10px,
+        #242424 10px,
+        #242424 20px
+      );
+  background-size:
+    50px 50px,
+    50px 50px,
+    40px 40px,
+    60px 60px,
+    100% 100%;
+  animation: shift 15s linear infinite;
 }
 
 .auth-page-wrapper.loading-state {
@@ -85,15 +126,156 @@ body {
 .auth-card {
   width: 100%;
   max-width: 440px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 24px;
+  background: linear-gradient(135deg, #1e1b4b 0%, #0f101d 100%);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: 15px;
   box-shadow: var(--card-shadow);
   padding: 40px;
   box-sizing: border-box;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  z-index: 1;
+}
+
+/* Ensure form contents render above the absolute expanding backgrounds */
+.auth-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.auth-card::before,
+.auth-card::after {
+  position: absolute;
+  content: "";
+  width: 20%;
+  height: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  transition: all 0.5s;
+  z-index: 1;
+}
+
+.auth-card::before {
+  top: 0;
+  right: 0;
+  border-radius: 0 15px 0 100%;
+}
+
+.auth-card::after {
+  bottom: 0;
+  left: 0;
+  border-radius: 0 100% 0 15px;
+}
+
+.auth-card:hover::before,
+.auth-card:hover::after {
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  transition: all 0.5s;
+}
+
+.auth-card:hover::after {
+  color: rgba(0, 0, 0, 0.05); /* Very soft dark watermark */
+}
+
+/* Contrast adjustment for readable text on hover (transiting to black) */
+.auth-card:hover {
+  color: #000000;
+  border-color: rgba(124, 58, 237, 0.5);
+}
+
+.auth-card:hover .auth-title {
+  background: none;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  color: #000000;
+}
+
+.auth-card:hover .auth-subtitle {
+  color: #1a1a1a;
+}
+
+.auth-card:hover .form-label {
+  color: #000000;
+}
+
+/* Ensure sliding toggle text colors change to black on hover */
+.auth-card:hover .checkbox:checked ~ .tab-label-signin {
+  color: rgba(0, 0, 0, 0.5);
+}
+.auth-card:hover .checkbox:not(:checked) ~ .tab-label-signin {
+  color: #000000;
+}
+.auth-card:hover .checkbox:checked ~ .tab-label-register {
+  color: #000000;
+}
+.auth-card:hover .checkbox:not(:checked) ~ .tab-label-register {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Container for the tabs */
+.toggle-switch {
+  position: relative;
+  width: 320px; /* Adjust to fit your design width */
+  height: 50px;
+  background-color: #000000; /* Black background */
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.checkbox {
+  display: none;
+}
+
+/* The moving background pill */
+.slider {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 150px; /* Half of the container width minus padding spacing */
+  height: 40px;
+  background: #7c3aed; /* Violet active color */
+  border-radius: 20px;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Move the slider when 'Register' is checked */
+.checkbox:checked ~ .slider {
+  transform: translateX(160px);
+}
+
+/* The labels for Sign In / Register */
+.tab-label {
+  flex: 1;
+  text-align: center;
+  z-index: 1;
+  cursor: pointer;
+  color: #a5b4fc; /* Inactive color */
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+/* Change text color when active */
+.checkbox:checked ~ .tab-label-signin {
+  color: #a5b4fc;
+}
+.checkbox:not(:checked) ~ .tab-label-signin {
+  color: white;
+}
+
+.checkbox:checked ~ .tab-label-register {
+  color: white;
 }
 
 .auth-header {
@@ -120,35 +302,6 @@ body {
   font-size: 14px;
   color: var(--text);
   margin: 0;
-}
-
-/* Tabs toggle */
-.auth-tabs {
-  display: flex;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 28px;
-}
-
-.tab-btn {
-  flex: 1;
-  border: none;
-  background: transparent;
-  padding: 10px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.tab-btn.active {
-  color: var(--text-h);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Forms */
@@ -183,21 +336,23 @@ body {
 
 .form-input {
   width: 100%;
-  padding: 12px 16px;
-  font-size: 15px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.2);
+  border: 2px solid #e8e8e8;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #212121;
+  font-size: small;
+  font-weight: bold;
+  text-align: center;
   color: var(--text-h);
   box-sizing: border-box;
   transition: all 0.3s ease;
 }
 
 .form-input:focus {
-  border-color: var(--input-focus-border);
-  background: rgba(0, 0, 0, 0.4);
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.15);
+  outline-color: white;
+  background-color: #212121;
+  color: #e8e8e8;
+  box-shadow: 5px 5px #888888;
 }
 
 /* Submit Button */
@@ -520,18 +675,59 @@ textarea::-webkit-scrollbar-thumb:hover {
   border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
-/* Glassmorphism updates for cards */
 .devroom-card {
-  background: rgba(15, 17, 23, 0.45) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --background: linear-gradient(to left, #6366f1 0%, #7c3aed 100%);
+  padding: 4px;
+  border-radius: 1rem;
+  overflow: visible !important;
+  background: var(--background) !important;
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
   transition: all 0.3s ease;
+  border: none !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
 }
-.devroom-card:hover {
-  border-color: rgba(255, 255, 255, 0.16) !important;
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+
+.devroom-card::after {
+  position: absolute;
+  content: "";
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  transform: scale(0.85);
+  filter: blur(25px);
+  background: var(--background);
+  transition: opacity 0.5s;
+  opacity: 0.6;
+}
+
+.devroom-card-info {
+  --color: #0d0f19; /* Dark slate-indigo card inner background */
+  background: var(--color) !important;
+  color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  border-radius: 0.8rem;
+  box-sizing: border-box;
+  transition: color 0.5s ease;
+}
+
+/*Hover*/
+.devroom-card:hover::after {
+  opacity: 0.15; /* Maintain a subtle glow on hover */
+}
+
+.devroom-card:hover .devroom-card-info {
+  color: var(--text-h);
 }
 
 /* Typography Overrides */
@@ -777,4 +973,532 @@ textarea::-webkit-scrollbar-thumb:hover {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Custom 3D Logout Button style */
+.logout-3d-btn {
+  background-color: #2e1065 !important; /* bg-violet-950 equivalent */
+  color: #c7d2fe !important;            /* text-violet-300 equivalent */
+  border: 1px solid #c084fc !important;  /* border border-violet-400 equivalent */
+  border-bottom-width: 4px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  overflow: hidden;
+  position: relative;
+  padding: 6px 14px !important;
+  border-radius: 30px !important;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout-3d-btn:hover {
+  filter: brightness(1.3);
+  border-top-width: 4px !important;
+  border-bottom-width: 1px !important;
+}
+
+.logout-3d-btn:active {
+  opacity: 0.75;
+}
+
+.logout-btn-glow {
+  background-color: #c084fc;
+  box-shadow: 0 0 10px 10px rgba(192, 132, 252, 0.5);
+  position: absolute;
+  top: -150%;
+  left: 0;
+  display: inline-flex;
+  width: 20rem;
+  height: 5px;
+  border-radius: 0.375rem;
+  opacity: 0.5;
+  transition: all 0.5s ease;
+}
+
+.logout-3d-btn:hover .logout-btn-glow {
+  top: 150%;
+}
+
+/* Container overrides for DEVROOMS title card */
+.devrooms-title-container {
+  display: inline-block !important;
+  width: fit-content;
+}
+
+.devrooms-title-text {
+  font-family: "Inter", sans-serif !important;
+  font-size: 40px !important;
+  font-weight: 800 !important;
+  margin: 0;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, #c084fc 0%, #6366f1 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-transform: uppercase;
+}
+
+@keyframes shift {
+  0% {
+    background-position:
+      0 0,
+      0 0,
+      10px 10px,
+      20px 20px,
+      0 0;
+  }
+  100% {
+    background-position:
+      50px 50px,
+      -50px -50px,
+      60px 60px,
+      80px 80px,
+      0 0;
+  }
+}
+
+/* Rain background from sample.css for disabled sessions */
+.session-hidden-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    #0000 0,
+    #0000 2px,
+    hsl(0 0 4%) 2px
+  );
+  background-size: 8px 8px;
+  --f: blur(1em) brightness(6);
+  animation: hii 10s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes hii {
+  0% {
+    backdrop-filter: var(--f) hue-rotate(0deg);
+  }
+  to {
+    backdrop-filter: var(--f) hue-rotate(360deg);
+  }
+}
+
+.session-hidden-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  --c: #09f;
+  background-color: #000;
+  background-image:
+    radial-gradient(4px 100px at 0px 235px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 235px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 117.5px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 252px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 252px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 126px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 150px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 150px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 75px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 253px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 253px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 126.5px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 204px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 204px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 102px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 134px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 134px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 67px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 179px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 179px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 89.5px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 299px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 299px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 149.5px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 215px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 215px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 107.5px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 281px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 281px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 140.5px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 158px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 158px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 79px, var(--c) 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 210px, var(--c), #0000),
+    radial-gradient(4px 100px at 300px 210px, var(--c), #0000),
+    radial-gradient(1.5px 1.5px at 150px 105px, var(--c) 100%, #0000 150%);
+  background-size:
+    300px 235px,
+    300px 235px,
+    300px 235px,
+    300px 252px,
+    300px 252px,
+    300px 252px,
+    300px 150px,
+    300px 150px,
+    300px 150px,
+    300px 253px,
+    300px 253px,
+    300px 253px,
+    300px 204px,
+    300px 204px,
+    300px 204px,
+    300px 134px,
+    300px 134px,
+    300px 134px,
+    300px 179px,
+    300px 179px,
+    300px 179px,
+    300px 299px,
+    300px 299px,
+    300px 299px,
+    300px 215px,
+    300px 215px,
+    300px 215px,
+    300px 281px,
+    300px 281px,
+    300px 281px,
+    300px 158px,
+    300px 158px,
+    300px 158px,
+    300px 210px,
+    300px 210px,
+    300px 210px;
+  animation: hi 150s linear infinite;
+  overflow: hidden;
+}
+
+@keyframes hi {
+  0% {
+    background-position:
+      0px 220px,
+      3px 220px,
+      151.5px 337.5px,
+      25px 24px,
+      28px 24px,
+      176.5px 150px,
+      50px 16px,
+      53px 16px,
+      201.5px 91px,
+      75px 224px,
+      78px 224px,
+      226.5px 350.5px,
+      100px 19px,
+      103px 19px,
+      251.5px 121px,
+      125px 120px,
+      128px 120px,
+      276.5px 187px,
+      150px 31px,
+      153px 31px,
+      301.5px 120.5px,
+      175px 235px,
+      178px 235px,
+      326.5px 384.5px,
+      200px 121px,
+      203px 121px,
+      351.5px 228.5px,
+      225px 224px,
+      228px 224px,
+      376.5px 364.5px,
+      250px 26px,
+      253px 26px,
+      401.5px 105px,
+      275px 75px,
+      278px 75px,
+      426.5px 180px;
+  }
+
+  to {
+    background-position:
+      0px 6800px,
+      3px 6800px,
+      151.5px 6917.5px,
+      25px 13632px,
+      28px 13632px,
+      176.5px 13758px,
+      50px 5416px,
+      53px 5416px,
+      201.5px 5491px,
+      75px 17175px,
+      78px 17175px,
+      226.5px 17301.5px,
+      100px 5119px,
+      103px 5119px,
+      251.5px 5221px,
+      125px 8428px,
+      128px 8428px,
+      276.5px 8495px,
+      150px 9876px,
+      153px 9876px,
+      301.5px 9965.5px,
+      175px 13391px,
+      178px 13391px,
+      326.5px 13540.5px,
+      200px 14741px,
+      203px 14741px,
+      351.5px 14848.5px,
+      225px 18770px,
+      228px 18770px,
+      376.5px 18910.5px,
+      250px 5082px,
+      253px 5082px,
+      401.5px 5161px,
+      275px 6375px,
+      278px 6375px,
+      426.5px 6480px;
+  }
+}
+
+
+.vertical-tab {
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+/* Header style from experiment */
+.experiment-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: 3px;
+  background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
+  z-index: 100;
+  transition: all .3s;
+  box-shadow: 0px 5px 20px rgba(0, 255, 117, 0.15);
+  border-radius: 0 0 20px 20px;
+}
+
+.experiment-header:hover {
+  box-shadow: 0px 0px 30px 1px rgba(0, 255, 117, 0.30);
+}
+
+.header-inner {
+  width: 100%;
+  height: 60px;
+  background-color: #0d0f19;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  box-sizing: border-box;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  transition: all .2s;
+}
+
+.header-inner:hover {
+  transform: scaleY(0.98);
+  transform-origin: top;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  flex: 1;
+  margin-right: 20px;
+}
+
+.logo {
+  font-family: "Inter", sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  margin: 0;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, #c084fc 0%, #6366f1 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.room-name {
+  display: inline-block;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(192, 132, 252, 0.4);
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.2), inset 0 0 4px rgba(192, 132, 252, 0.1);
+  width: 120px;
+  box-sizing: border-box;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.room-name:hover {
+  border-color: rgba(192, 132, 252, 0.8);
+  box-shadow: 0 0 17px rgba(192, 132, 252, 0.4), inset 0 0 6px rgba(192, 132, 252, 0.2);
+}
+
+.room-id {
+  display: inline-block;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 8px;
+  border-radius: 20px;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.2), inset 0 0 4px rgba(99, 102, 241, 0.1);
+  font-family: monospace;
+  width: 120px;
+  box-sizing: border-box;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.room-id:hover {
+  border-color: rgba(99, 102, 241, 0.8);
+  box-shadow: 0 0 17px rgba(99, 102, 241, 0.4), inset 0 0 6px rgba(99, 102, 241, 0.2);
+}
+
+.btn-end-session {
+  background-color: #451a1a !important;
+  color: #fecaca !important;
+  border: 1px solid #f87171 !important;
+  border-bottom-width: 4px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  overflow: hidden;
+  position: relative;
+  padding: 6px 0 !important;
+  width: 120px;
+  box-sizing: border-box;
+  border-radius: 30px !important;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-end-session:hover {
+  filter: brightness(1.2);
+  border-top-width: 4px !important;
+  border-bottom-width: 1px !important;
+}
+
+.btn-end-session:active {
+  opacity: 0.75;
+}
+
+.logout-btn-glow {
+  background-color: #ef4444;
+  box-shadow: 0 0 10px 10px rgba(239, 68, 68, 0.5);
+  position: absolute;
+  top: -150%;
+  left: 0;
+  display: inline-flex;
+  width: 20rem;
+  height: 5px;
+  border-radius: 0.375rem;
+  opacity: 0.5;
+  transition: all 0.5s ease;
+}
+
+.btn-end-session:hover .logout-btn-glow {
+  top: 150%;
+}
+
+/* Experiment Flex Resizable Layout */
+.experiment-layout-flex {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  z-index: 10;
+  width: calc(100% - 40px);
+  height: calc(100% - 100px);
+  box-sizing: border-box;
+}
+
+.resize-handle-h {
+  width: 10px;
+  cursor: col-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  margin: 0 5px;
+  z-index: 20;
+  user-select: none;
+}
+
+.resize-handle-h:hover, .resize-handle-h.active {
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 4px;
+}
+
+.handle-bar-h {
+  width: 4px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+
+.resize-handle-h:hover .handle-bar-h, .resize-handle-h.active .handle-bar-h {
+  background: #c084fc;
+  box-shadow: 0 0 8px #c084fc;
+}
+
+.resize-handle-v {
+  height: 10px;
+  cursor: row-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  margin: 5px 0;
+  z-index: 20;
+  user-select: none;
+}
+
+.resize-handle-v:hover, .resize-handle-v.active {
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 4px;
+}
+
+.handle-bar-v {
+  height: 4px;
+  width: 40px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+
+.resize-handle-v:hover .handle-bar-v, .resize-handle-v.active .handle-bar-v {
+  background: #c084fc;
+  box-shadow: 0 0 8px #c084fc;
 }
