@@ -25,7 +25,6 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [notification, setNotification] = useState(null);
-  const [isLightMode, setIsLightMode] = useState(false);
 
   // Auto-clear notification after 6 seconds
   useEffect(() => {
