@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import RoomDashboard from './components/RoomDashboard.jsx';
 import CodingRoom from './components/CodingRoom.jsx';
-import { YjsProvider } from './context/YjsContext.jsx';
+import { YjsProvider } from './providers/YjsContext.jsx';
 
 const safeParseJson = async (response) => {
   const text = await response.text();
