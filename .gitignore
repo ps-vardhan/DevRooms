@@ -2,13 +2,6 @@
 logs
 *.log
 npm-debug.log*
-
-# LiveKit & Media
-recordings/
-*.webm
-*.mp4
-*.wav
-*.mp3
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
@@ -32,10 +25,6 @@ dist-ssr
 
 # Environment Variables
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # Vite
 .vite/
@@ -52,10 +41,6 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# Logs (server)
-server/logs
-server/*.log
-
 # Secrets
 *.pem
 *.key
@@ -69,7 +54,6 @@ server/*.log
 # Backups
 *.bak
 *~
-*.swp
 
 # Scratchpad
 plan.md
