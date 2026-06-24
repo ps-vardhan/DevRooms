@@ -6,9 +6,9 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   globalIgnores(['dist', 'node_modules']),
-  // Backend configuration (Node.js)
+  // Server configuration (Node.js)
   {
-    files: ['backend/**/*.js'],
+    files: ['server/**/*.js'],
     extends: [js.configs.recommended],
     languageOptions: {
       ecmaVersion: 'latest',
